@@ -1,0 +1,32 @@
+<div class="card">
+
+  <!-- HEADER -->
+  <div style="margin-bottom:10px;">
+    <div><b id="d_no_ref">-</b></div>
+    <div id="d_customer" style="margin-top:4px;"></div>
+    <div id="d_tanggal" style="font-size:12px; color:#9ca3af;"></div>
+
+    <!-- 🔥 TAMBAHAN -->
+    <div id="d_pembayaran" style="margin-top:6px;"></div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-bottom:10px;">
+  <button onclick="editTransaksi()" class="btn-edit">Edit</button>
+  <button onclick="hapusTransaksi()" class="btn-delete">Hapus</button>
+  <button onclick="downloadInvoice()" class="btn-primary">Invoice</button>
+</div>
+  </div>
+
+  <hr>
+
+  <!-- ITEMS -->
+  <div id="d_items" style="margin-top:10px;"></div>
+
+  <hr style="margin-top:10px;">
+
+  <!-- TOTAL -->
+  <div style="display:flex; justify-content:space-between; margin-top:10px;">
+    <b>Total</b>
+    <b id="d_total">Rp 0</b>
+  </div>
+
+</div>

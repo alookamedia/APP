@@ -1,0 +1,91 @@
+<div class="card">
+
+  <!-- ======================
+       HEADER TRANSAKSI
+  ======================= -->
+
+  <!-- NO REF -->
+  <div class="field">
+    <label>No Invoice</label>
+    <input id="no_ref" type="text" readonly>
+  </div>
+
+  <!-- TANGGAL -->
+  <div class="field">
+    <label>Tanggal</label>
+    <input id="tanggal" type="text" readonly>
+  </div>
+
+  <!-- CUSTOMER -->
+  <div class="field">
+  <label>Customer</label>
+
+  <input 
+    id="customer"
+    type="text"
+    placeholder="Cari customer..."
+    autocomplete="off"
+    oninput="searchCustomer(this.value)"
+  >
+
+  <div id="customerDropdown" class="dropdown"></div>
+</div>
+
+<div class="field">
+  <label>No Telp</label>
+  <input id="telp">
+</div>
+
+<div class="field">
+  <label>Alamat</label>
+  <input id="alamat">
+</div>
+
+  <!-- SALES -->
+  <div class="field">
+    <label>Sales</label>
+    <select id="sales">
+      <option value="">Pilih Sales</option>
+      <option>Adis</option>
+      <option>Hangga</option>
+    </select>
+  </div>
+
+  <!-- PEMBAYARAN -->
+  <div class="field">
+    <label>Pembayaran</label>
+    <select id="pembayaran">
+  <option value="cash">Cash</option>
+  <option value="transfer">Transfer</option>
+  <option value="tempo">Tempo</option>
+</select>       
+  </div>
+
+  <!-- ======================
+       ITEMS
+  ======================= -->
+  <div id="items"></div>
+
+  <!-- ACTION -->
+  <button type="button" onclick="addItem()">+ Tambah Item</button>
+
+  <!-- ======================
+       TOTAL
+  ======================= -->
+  <div style="margin-top:12px;">
+    <b>Total: <span id="total">Rp 0</span></b>
+  </div>
+
+  <!-- ======================
+       SUBMIT
+  ======================= -->
+  <button 
+    type="button"
+    class="primary"
+    onclick="simpan()"
+    style="margin-top:10px;"
+  >
+    Simpan
+  </button>
+
+</div>

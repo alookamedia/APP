@@ -1,0 +1,75 @@
+<div class="wrapper">
+<div class="invoice">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    PT ENNA<br>
+    <span style="font-size:8.5px; opacity:.7;">Steel & Construction</span>
+  </div>
+
+  <div class="invoice-title" style="text-align:right;">
+    <h1>INVOICE</h1>
+    <span id="inv_no">-</span>
+  </div>
+</div>
+
+<!-- TOP -->
+<div class="top">
+
+  <div class="block">
+    <div class="label">Penerima</div>
+    <div class="bold" id="inv_customer">-</div>
+    <div id="inv_alamat">-</div>
+  </div>
+
+  <div class="block" style="text-align:right;">
+    <div class="label">Tanggal</div>
+    <div class="bold" id="inv_tanggal">-</div>
+  </div>
+
+</div>
+
+<!-- TABLE -->
+<table class="table">
+  <thead>
+    <tr>
+      <th>Produk</th>
+      <th class="right">Harga</th>
+      <th class="right">Qty</th>
+      <th class="right">Total</th>
+    </tr>
+  </thead>
+
+  <tbody id="inv_items"></tbody>
+</table>
+
+<!-- TOTAL -->
+<div class="summary">
+  <div class="totals">
+
+    <div class="row">
+      <div>Subtotal</div>
+      <div id="inv_subtotal">Rp 0</div>
+    </div>
+
+    <div class="row grand">
+      <div>Total</div>
+      <div id="inv_sisa">Rp 0</div>
+    </div>
+
+    <div class="payment">
+      <div class="bold">Pembayaran</div>
+      <div id="inv_pembayaran">-</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ACTION -->
+<div style="margin-top:20px;">
+  <button onclick="window.print()">Download PDF</button>
+</div>
+
+</div>
+</div>

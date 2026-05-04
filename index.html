@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KASIRKU</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/app.js" defer></script>
+<script src="js/dashboard.js" defer></script>
+<script src="js/penjualan.js" defer></script>
+<script src="js/form-penjualan.js" defer></script>
+<script src="js/detail-penjualan.js" defer></script>
+<script src="js/invoice.js" defer></script>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div>
+    <div id="title" class="header-title">Dashboard</div>
+  </div>
+</div>
+
+<!-- APP CONTAINER -->
+<div id="app"></div>
+
+<!-- NAV -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+
+    <div class="nav-item" onclick="go('dashboard.html','Dashboard')">
+      Home
+    </div>
+
+    <div class="nav-item" onclick="go('penjualan.html','Penjualan')">
+      Data
+    </div>
+
+    <div class="nav-item add" onclick="go('form-penjualan.html','Form')">
+      +
+    </div>
+
+  </div>
+</div>
+
+
+</body>
+</html>
