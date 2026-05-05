@@ -13,38 +13,23 @@
   <!-- TANGGAL -->
   <div class="field">
     <label>Tanggal</label>
-    <input id="tanggal" type="text" readonly>
+    <input id="tanggal" type="date">
   </div>
 
   <!-- CUSTOMER -->
   <div class="field">
-  <div class="field">
-
   <label>Customer</label>
 
-  <div class="autocomplete">
+  <input 
+    id="customer"
+    type="text"
+    placeholder="Cari customer..."
+    autocomplete="off"
+    oninput="searchCustomer(this.value)"
+  >
 
-    <input
-
-      id="customer"
-
-      type="text"
-
-      placeholder="Cari customer..."
-
-      autocomplete="off"
-
-      oninput="searchCustomer(this.value)"
-
-    >
-
-    <div id="customerDropdown" class="dropdown"></div>
-
-  </div>
-
+  <div id="customerDropdown" class="dropdown"></div>
 </div>
-
-
 
 <div class="field">
   <label>No Telp</label>
