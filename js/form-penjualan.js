@@ -187,12 +187,23 @@ function removeItem(i) {
    SIMPAN
 ====================== */
 async function simpan() {
+  // ======================
+  // ELEMENT
+  // ======================
+  const tanggalInput = document.getElementById("tanggal")?.value
   const customerEl = document.getElementById('customer')
   const telpEl = document.getElementById('telp')
   const alamatEl = document.getElementById('alamat')
 
   const customer = (customerEl?.value || '').trim()
   const pembayaran = document.getElementById("pembayaran")?.value || "cash"
+
+  // ======================
+  // FIX TANGGAL (FINAL)
+  // ======================
+  const tanggalFinal = tanggalInput
+    ? new Date(tanggalInput).toISOString()
+    : new Date().toISOString()
 
   // ======================
   // AUTO MATCH CUSTOMER
@@ -206,11 +217,13 @@ async function simpan() {
       selectedCustomerId = found.id
 
       if (telpEl) {
-        telpEl.value = found.telp && found.telp !== "null" ? found.telp : ""
+        telpEl.value =
+          found.telp && found.telp !== "null" ? found.telp : ""
       }
 
       if (alamatEl) {
-        alamatEl.value = found.alamat && found.alamat !== "null" ? found.alamat : ""
+        alamatEl.value =
+          found.alamat && found.alamat !== "null" ? found.alamat : ""
       }
     }
   }
@@ -245,25 +258,25 @@ async function simpan() {
   }
 
   // ======================
-  // HITUNG TOTAL
+  // TOTAL
   // ======================
   const total = items.reduce((s, i) => s + (i.qty * i.harga), 0)
 
   // ======================
-  // CEK MODE
+  // MODE
   // ======================
   const isEdit = !!window.editId
   let penjualanId = window.editId
 
   // ======================
-  // HEADER (INSERT / UPDATE)
+  // HEADER (UPDATE / INSERT)
   // ======================
   if (isEdit) {
-    // 🔥 UPDATE
+    // UPDATE
     const { error } = await sb
       .from('penjualan')
       .update({
-        tanggal: new Date().toISOString(),
+        tanggal: tanggalFinal,
         customer_id: selectedCustomerId,
         customer: customer,
         pembayaran: pembayaran,
@@ -278,14 +291,14 @@ async function simpan() {
       return
     }
 
-    // 🔥 HAPUS DETAIL LAMA
+    // HAPUS DETAIL LAMA
     await sb
       .from('penjualan_items')
       .delete()
       .eq("penjualan_id", penjualanId)
 
   } else {
-    // 🔥 INSERT BARU
+    // INSERT BARU
     let noRef = ''
     try {
       noRef = await getNoRef()
@@ -298,7 +311,7 @@ async function simpan() {
       .from('penjualan')
       .insert([{
         no_ref: noRef,
-        tanggal: new Date().toISOString(),
+        tanggal: tanggalFinal,
         customer_id: selectedCustomerId,
         customer: customer,
         pembayaran: pembayaran,
@@ -318,7 +331,7 @@ async function simpan() {
   }
 
   // ======================
-  // INSERT DETAIL BARU
+  // DETAIL
   // ======================
   const detail = items.map(it => ({
     penjualan_id: penjualanId,
@@ -374,19 +387,32 @@ async function getNoRef() {
 }
 
 // isi field header (no_ref + tanggal)
-function initFormHeader(noRef) {
+function initFormHeader(noRef, tanggalEdit = null) {
   const noRefEl = document.getElementById('no_ref')
   const tglEl = document.getElementById('tanggal')
 
   if (noRefEl) noRefEl.value = noRef
 
+  if (!tglEl) return
+
+  // 🔥 kalau edit → pakai tanggal lama
+  if (tanggalEdit) {
+    const d = new Date(tanggalEdit)
+    const yyyy = d.getFullYear()
+    const mm = String(d.getMonth() + 1).padStart(2, '0')
+    const dd = String(d.getDate()).padStart(2, '0')
+
+    tglEl.value = `${yyyy}-${mm}-${dd}`
+    return
+  }
+
+  // 🔥 kalau create → default hari ini
   const now = new Date()
-  const tgl = now.toLocaleDateString('id-ID', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  })
-  if (tglEl) tglEl.value = tgl
+  const yyyy = now.getFullYear()
+  const mm = String(now.getMonth() + 1).padStart(2, '0')
+  const dd = String(now.getDate()).padStart(2, '0')
+
+  tglEl.value = `${yyyy}-${mm}-${dd}`
 }
 
 //lCUSTOMER BASE
