@@ -507,70 +507,123 @@ async function tambahCustomer(nama) {
 async function loadEditPenjualan(id) {
   console.log("EDIT MODE:", id)
 
-  // ===== HEADER
-  const { data: header, error: e1 } = await sb
-    .from("penjualan")
-    .select(`
-      id,
-      no_ref,
-      tanggal,
-      pembayaran,
-      customer_id,
-      customers!penjualan_customer_id_fkey (nama, telp, alamat)
-    `)
-    .eq("id", id)
-    .single()
-
-  if (e1 || !header) {
-    console.log("ERROR HEADER:", e1)
-    alert("Gagal load data")
+  if (!id) {
+    console.log("❌ ID kosong")
     return
   }
 
-  // ===== ITEMS
-  const { data: rows, error: e2 } = await sb
-    .from("penjualan_items")
-    .select(`
-      produk_id,
-      qty,
-      harga,
-      produk (nama)
-    `)
-    .eq("penjualan_id", id)
+  // ======================
+  // TUNGGU DOM SIAP (ANTI NULL)
+  // ======================
+  let retry = 0
+  let ready = document.getElementById("no_ref")
 
-  if (e2) {
-    console.log("ERROR ITEMS:", e2)
-    alert("Gagal load item")
+  while (!ready && retry < 10) {
+    await new Promise(r => setTimeout(r, 50))
+    ready = document.getElementById("no_ref")
+    retry++
+  }
+
+  if (!ready) {
+    console.log("❌ FORM BELUM RENDER")
     return
   }
 
-  // ===== SET HEADER UI
-  document.getElementById("no_ref").value = header.no_ref || ""
-  document.getElementById("tanggal").value =
-    new Date(header.tanggal).toLocaleDateString("id-ID")
+  try {
+    // ======================
+    // AMBIL HEADER
+    // ======================
+    const { data: header, error } = await sb
+      .from("penjualan")
+      .select(`
+        id,
+        no_ref,
+        tanggal,
+        pembayaran,
+        customer,
+        customer_id,
+        customers!penjualan_customer_id_fkey (nama, telp, alamat)
+      `)
+      .eq("id", id)
+      .single()
 
-  // customer
-  selectedCustomerId = header.customer_id || null
-  document.getElementById("customer").value =
-    header.customers?.nama || ""
+    if (error || !header) {
+      console.log("ERROR HEADER:", error)
+      alert("Gagal load data")
+      return
+    }
 
-  document.getElementById("telp").value =
-    header.customers?.telp || ""
+    // ======================
+    // AMBIL ITEMS
+    // ======================
+    const { data: detail } = await sb
+      .from("penjualan_items")
+      .select(`
+        produk_id,
+        qty,
+        harga,
+        produk ( nama )
+      `)
+      .eq("penjualan_id", id)
 
-  document.getElementById("alamat").value =
-    header.customers?.alamat || ""
+    // ======================
+    // SET GLOBAL EDIT
+    // ======================
+    window.editId = id
+    selectedCustomerId = header.customer_id
 
-  // pembayaran
-  const bayarEl = document.getElementById("pembayaran")
-  if (bayarEl) bayarEl.value = header.pembayaran || "cash"
+    // ======================
+    // FILL HEADER FORM
+    // ======================
+    const noRefEl = document.getElementById("no_ref")
+    const tglEl = document.getElementById("tanggal")
+    const custEl = document.getElementById("customer")
+    const telpEl = document.getElementById("telp")
+    const alamatEl = document.getElementById("alamat")
+    const bayarEl = document.getElementById("pembayaran")
 
-  // ===== SET ITEMS
-  items = (rows || []).map(r => ({
-    produk_id: r.produk_id,
-    nama: r.produk?.nama || "",
-    qty: r.qty,
-    harga: r.harga
-  }))
+    if (noRefEl) noRefEl.value = header.no_ref || ""
 
-  renderItems()
+    // 🔥 FORMAT DATE UNTUK INPUT DATE
+    if (tglEl && header.tanggal) {
+      const d = new Date(header.tanggal)
+      const yyyy = d.getFullYear()
+      const mm = String(d.getMonth() + 1).padStart(2, "0")
+      const dd = String(d.getDate()).padStart(2, "0")
+      tglEl.value = `${yyyy}-${mm}-${dd}`
+    }
+
+    if (custEl) custEl.value = header.customers?.nama || header.customer || ""
+    if (telpEl) telpEl.value = header.customers?.telp || ""
+    if (alamatEl) alamatEl.value = header.customers?.alamat || ""
+
+    if (bayarEl) bayarEl.value = header.pembayaran || "cash"
+
+    // ======================
+    // FILL ITEMS
+    // ======================
+    items = []
+
+    if (detail && detail.length > 0) {
+      items = detail.map(d => ({
+        produk_id: d.produk_id,
+        nama: d.produk?.nama || "-",
+        qty: d.qty,
+        harga: d.harga
+      }))
+    }
+
+    renderItems()
+
+    // ======================
+    // HITUNG TOTAL
+    // ======================
+    const total = items.reduce((s, i) => s + (i.qty * i.harga), 0)
+    const totalEl = document.getElementById("total")
+    if (totalEl) totalEl.innerText = "Rp " + total.toLocaleString("id-ID")
+
+  } catch (err) {
+    console.log("ERROR LOAD EDIT:", err)
+    alert("Gagal load edit")
+  }
 }
